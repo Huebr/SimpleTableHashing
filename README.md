@@ -5,8 +5,8 @@ Ambiente
 ------------------------------------------
 Este projeto foi desenvolvido usando Visual Studio 2017, com perfil x64/Debug.
 
-Para compilar no linux, basta ir na pasta:
-g++ -O3 hashing.cpp -o hashing
+Para compilar no linux, basta ir na pasta raiz:
+g++ -O3 Hashing.cpp -o hashing
 
 Modo de usar
 ------------------------------------------
