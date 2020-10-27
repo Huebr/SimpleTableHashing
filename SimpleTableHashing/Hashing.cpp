@@ -15,6 +15,16 @@ struct item {
 	int8_t  bit = 0;
 };
 
+//euclidian modulus
+int64_t modulo(int64_t a, int64_t b) {
+	int64_t m = a % b;
+	if (m < 0) {
+		// m += (b < 0) ? -b : b; // avoid this form: it is UB when b == INT_MIN
+		m = (b < 0) ? m - b : m + b;
+	}
+	return m;
+}
+
 template <class element>
 struct hashtable{
 	int64_t T[8][256];
@@ -89,12 +99,12 @@ struct hashtable{
 		int64_t hash = SimpleTableHashing(data);
 		int64_t m = ht->capacity();
 		for (int i = 0; i < m; ++i) {
-			int64_t idx = (hash + i) % m;
+			int64_t idx = modulo((hash + i),m);
 			if ((*ht)[idx].bit != 1) {
 				if ((*ht)[idx].bit == 3) n_removed--;
 				(*ht)[idx].data = data;
 				(*ht)[idx].bit = 1;
-				if (debug)cout << hash % m << " " << idx << endl;
+				if (debug)cout << modulo(hash,m) << " " << idx << endl;
 				break;
 			}
 		}
@@ -110,9 +120,9 @@ struct hashtable{
 	int64_t buscar(int64_t data) {
 		int64_t hash = SimpleTableHashing(data);
 		int64_t m = ht->capacity();
-		cout << hash % m <<" ";
+		cout << modulo(hash, m) <<" ";
 		for (int i = 0; i < m; ++i) {
-			int64_t idx = (hash + i) % m;
+			int64_t idx = modulo(hash+i, m);
 			if (data == (*ht)[idx].data && (*ht)[idx].bit == 1) {
 				return idx;
 			}
@@ -124,6 +134,7 @@ struct hashtable{
 		int64_t m = ht->capacity();
 		vector<element> *temp = ht;
 		ht = new vector<element>(m);
+		n_removed = 0;
 		for (int i = 0; i < m; ++i) {
 			if ((*temp)[i].bit == 1)incluir((*temp)[i].data, false);
 		}
@@ -138,11 +149,11 @@ struct hashtable{
 		bool cleared = false;
 
 		for (int i = 0; i < m; ++i) {
-			int64_t idx = (hash + i) % m;
+			int64_t idx = modulo(hash+i, m);
 			if ((*ht)[idx].data == data && (*ht)[idx].bit == 1) {
 				(*ht)[idx].bit = 3;
 				n_removed++;
-				cout << hash % m << " " << idx << endl;
+				cout << modulo(hash, m) << " " << idx << endl;
 				cleared = true;
 				break;
 			}
@@ -156,18 +167,15 @@ struct hashtable{
 			}
 			else if (n_removed > m / 4) limpar();
 		}
-		else cout << hash % m << " " << -1 << endl;
+		else cout << modulo(hash, m) << " " << -1 << endl;
 	}
 
 };
 
-
-
-
-int main(int argc,char **argv)
+int main(int argc, char **argv)
 {
 	if (argc != 3) {
-		cout << "Arquivos não foram passados como argumento"<<endl;
+		cout << "Arquivos não foram passados como argumento" << endl;
 		cout << "usage: program input_name.txt output_name.txt" << endl;
 		cout << "obs: crie o arquivo de saida antes de chamar o programa." << endl;
 		return -1;
@@ -179,7 +187,7 @@ int main(int argc,char **argv)
 		cout << "erro abrindo arquivo de entrada.";
 		return -1;
 	}
-	if (freopen(argv[2],"w+",stdout)==NULL) {
+	if (freopen(argv[2], "w+", stdout) == NULL) {
 		cout << "erro abrindo arquivo de saida.";
 		return -1;
 	}
@@ -190,7 +198,7 @@ int main(int argc,char **argv)
 	char trash;
 
 
-	if(fscanf(fp, "%c%c%c:%d", &op[0], &op[1], &op[2], &data) == 4) {
+	if (fscanf(fp, "%c%c%c:%d", &op[0], &op[1], &op[2], &data) == 4) {
 		do {
 			switch (op[0])
 			{
@@ -212,5 +220,7 @@ int main(int argc,char **argv)
 			}
 		} while (fscanf(fp, "%c%c%c%c:%d", &trash, &op[0], &op[1], &op[2], &data) == 5);
 	}
-	
+
 }
+
+
