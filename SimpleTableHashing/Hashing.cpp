@@ -104,7 +104,7 @@ struct hashtable{
 				if ((*ht)[idx].bit == 3) n_removed--;
 				(*ht)[idx].data = data;
 				(*ht)[idx].bit = 1;
-				if (debug)cout << hash << " " << idx << endl;
+				if (debug)cout << modulo(hash,m) << " " << idx << endl;
 				break;
 			}
 		}
@@ -120,7 +120,7 @@ struct hashtable{
 	int64_t buscar(int64_t data) {
 		int64_t hash = SimpleTableHashing(data);
 		int64_t m = ht->capacity();
-		cout <<hash <<" ";
+		cout << modulo(hash, m) <<" ";
 		for (int i = 0; i < m; ++i) {
 			int64_t idx = modulo(hash+i, m);
 			if (data == (*ht)[idx].data && (*ht)[idx].bit == 1) {
@@ -153,7 +153,7 @@ struct hashtable{
 			if ((*ht)[idx].data == data && (*ht)[idx].bit == 1) {
 				(*ht)[idx].bit = 3;
 				n_removed++;
-				cout << hash << " " << idx << endl;
+				cout << modulo(hash, m) << " " << idx << endl;
 				cleared = true;
 				break;
 			}
@@ -167,7 +167,7 @@ struct hashtable{
 			}
 			else if (n_removed > m / 4) limpar();
 		}
-		else cout << hash << " " << -1 << endl;
+		else cout << modulo(hash, m) << " " << -1 << endl;
 	}
 
 };
